@@ -30,6 +30,16 @@ export async function POST(request: Request) {
   }
 
   const url = new URL("/questionnaires", request.url)
-  return NextResponse.redirect(url);
+  const res = NextResponse.redirect(url);
+ 
+  const cookieOpts = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 60 * 60 * 24 * 7, // One week
+    path: '/'
+  }
+
+  res.cookies.set("user", JSON.stringify(userResult[0]), cookieOpts);
+  return res;
 }
 
