@@ -5,6 +5,11 @@ import { and, eq, inArray } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+interface IFormData {
+  [key: string]: string | string[];
+}
+
+
 function arraysEqual(a: any[], b: any[]) {
   if (a === b) return true;
   if (a == null || b == null) return false;
@@ -23,35 +28,35 @@ export async function POST(request: Response) {
   const user = cookieStore.get("user")?.value;
 
   if (!user) {
-    const url = new URL("/", request.url)
-    return NextResponse.redirect(url);
+    return new NextResponse("Forbidden request.", { status: 403 });
   }
 
   const userData = JSON.parse(user);
-  const formData = await request.formData();
-  const questionnaireId = formData.get("questionnaireId");
+  const formData: IFormData = await request.json();
+  const questionnaireId = formData["questionnaireId"];
   const responses: UserResponse[] = [];
   const questionIds: number[] = [];
 
-  for (let [key, value] of formData.entries()) {
+  for (let [key, value] of Object.entries(formData)) {
     if (key === "questionnaireId" || value === "") {
       continue;
     };
 
     const idStr = key.match(/\d+/);
+    let val: string[];
+    if (typeof(value) === "string") {
+      val = value.split(",");
+    } else {
+      val = value;
+    };
     if (idStr) {
       const questionId = parseInt(idStr[0]);
       if (!questionIds.includes(questionId)) questionIds.push(questionId);
-      const response = responses.find(response => response.questionId == questionId);
-      if (response) {
-        response.responses.push(value.toString());
-      } else {
-        responses.push({
-          userId: parseInt(userData.id),
-          questionId,
-          responses: [value.toString()],
-        });
-      }
+      responses.push({
+        userId: parseInt(userData.id),
+        questionId,
+        responses: val,
+      });
     }
   }
 
@@ -88,7 +93,7 @@ export async function POST(request: Response) {
     promises.push(db.insert(userResponse).values(responses));
   };
 
-  Promise.all(promises).then(async (results) => {
+  await Promise.all(promises).then(async (results) => {
     if (questionnaireId) {
       const id = parseInt(questionnaireId.toString());
       const questionnaireResult = await db.select()
@@ -114,7 +119,5 @@ export async function POST(request: Response) {
     };
   });
 
-  const url = new URL("/questionnaires", request.url)
-  const res = NextResponse.redirect(url);
-  return res;
+  return new NextResponse("Form submitted successfully", { status: 200 });
 };

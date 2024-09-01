@@ -1,10 +1,7 @@
+import ResponseForm from "@/app/forms/responseForm";
 import { db } from "@/app/lib/db";
 import { Question, UserResponse } from "@/app/lib/definitions";
 import { joinQuestionnaireQuestion, question, questionnaire, userResponse } from "@/app/lib/schema";
-import Button from "@/app/ui/button";
-import CheckBox from "@/app/ui/checkbox";
-import Radio from "@/app/ui/radio";
-import TextArea from "@/app/ui/textarea";
 import { and, eq, inArray } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -78,64 +75,16 @@ const RespondScreen = async ({ searchParams }: IRespondScreen) => {
     }
   });
 
-  const userResponses: UserResponse[] = [];
-  const questionCards = questionsWithResponses.map((q, i) => (
-    <div key={i}>
-      <div>
-        <span>{q.prompt}</span>
-      </div>
-      <div>
-        {q.type === "mcq" && q.options ? (
-          q.prompt.includes("Select all that apply") ? (
-            <div>
-              {q.options.map((option, index) => (
-                <div key={index}>
-                  <CheckBox
-                    id={`question-${q.id}-option-${index}`}
-                    name={`question-${q.id}-options`}
-                    value={option}
-                    checked={q.responses?.includes(option) || false}
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div>
-              {q.options.map((option, index) => (
-                <div key={index}>
-                  <Radio
-                    id={`question-${q.id}-option-${index}`}
-                    name={`question-${q.id}-options`}
-                    value={option}
-                    checked={q.responses?.includes(option) || false}
-                  />
-                </div>
-              ))}
-            </div>
-          )
-        ) : (
-          <div>
-            <TextArea
-              name={`question-${q.id}`}
-              value={q.responses?.[0] || ""}
-            />
-          </div>
-        )}
-      </div>
-    </div>
-  ));
-
   return (
     <main>
       <div>
         <h1>{questions[0].Questionnaire?.name}</h1>
       </div>
       <div>
-        <form action="/api/response" method="POST">
-          <input type="hidden" name="questionnaireId" value={id} />
-          {questionCards}
-          <Button type="submit">Submit</Button>
-        </form>
+        <ResponseForm
+          questionnaireId={id}
+          questions={questionsWithResponses}
+        />
       </div>
     </main>
   )
