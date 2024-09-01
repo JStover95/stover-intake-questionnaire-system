@@ -11,13 +11,13 @@ export async function POST(request: Request) {
   if (!username) {
     const url = new URL("/", request.url);
     url.searchParams.set("error", "Please enter a username");
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(url, { status: 302 });
   }
 
   if (!password) {
     const url = new URL("/", request.url);
     url.searchParams.set("error", "Please enter a password");
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(url, { status: 302 });
   }
 
   const userResult = await db.select().from(user).where(eq(user.username, username.toString()));
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   if (!userResult.length || password !== userResult[0].password) {
     const url = new URL("/", request.url);
     url.searchParams.set("error", "Invalid login credentials");
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(url, { status: 302 });
   }
 
   let url = new URL("/", request.url);
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   } else {
     url = new URL("/questionnaires", request.url);
   };
-  const res = NextResponse.redirect(url);
+  const res = NextResponse.redirect(url, { status: 302 });
  
   const cookieOpts = {
     httpOnly: true,
