@@ -11,6 +11,17 @@ interface IFormData {
 
 
 function arraysEqual(a: any[], b: any[]) {
+  /**
+ * Compares two arrays for equality.
+ *
+ * This function checks if two arrays are equal by comparing their elements one by one. 
+ * The comparison is strict (`===`), meaning that both the value and the type of elements must be the same.
+ *
+ * @param {any[]} a - The first array to compare.
+ * @param {any[]} b - The second array to compare.
+ * 
+ * @returns {boolean} - Returns `true` if both arrays are equal, `false` otherwise.
+ */
   if (a === b) return true;
   if (a == null || b == null) return false;
   if (a.length !== b.length) return false;
@@ -24,9 +35,12 @@ function arraysEqual(a: any[], b: any[]) {
 
 
 export async function POST(request: Request) {
+
+  // Check for the user's session cookie
   const cookieStore = cookies();
   const user = cookieStore.get("user")?.value;
 
+  // If a session cookie is not present, redirect to the login page
   if (!user) {
     return new NextResponse("Forbidden request.", { status: 403 });
   }
@@ -37,21 +51,32 @@ export async function POST(request: Request) {
   const responses: UserResponse[] = [];
   const questionIds: number[] = [];
 
+  // Iterate over all of the question responses
   for (let [key, value] of Object.entries(formData)) {
+
+    // Skip the hidden field "quetionnaireId" and any empty responses
     if (key === "questionnaireId" || value === "") {
       continue;
     };
 
+    // Get the id of the question being answered
     const idStr = key.match(/\d+/);
+
+    // Get the question's responses
     let val: string[];
     if (typeof(value) === "string") {
       val = value.split(",");
     } else {
       val = value;
     };
+
     if (idStr) {
       const questionId = parseInt(idStr[0]);
+
+      // Make a list of ids for every question in the questionnaire
       if (!questionIds.includes(questionId)) questionIds.push(questionId);
+
+      // Make a list of all question responses
       responses.push({
         userId: parseInt(userData.id),
         questionId,
@@ -60,6 +85,7 @@ export async function POST(request: Request) {
     }
   }
 
+  // Get any of the users' previous responses to any of the current questions
   const prevResponses = await db.select()
     .from(userResponse)
     .where(and(
@@ -67,7 +93,10 @@ export async function POST(request: Request) {
       eq(userResponse.userId, parseInt(userData.id)),
     ));
 
+  // Make a list of promises to wait for all db queries to finish in parallel
   const promises: Promise<any>[] = [];
+
+  // Get any join table between the user and this questionnaire
   const userJoin = db.select()
     .from(joinUserQuestionnaire)
     .where(and(
@@ -76,19 +105,27 @@ export async function POST(request: Request) {
     ));
   promises.push(userJoin);
 
+  // If there are any previous responses
   if (prevResponses) {
     prevResponses.forEach(prevResponse => {
       const i = responses.findIndex(response => response.questionId == prevResponse.questionId);
+
+      // If a the user made a new response to a question in this questionnaire
       if (i !== -1) {
+
+        // Update the existing response with the new response
         const promise = db.update(userResponse)
           .set({ responses: responses[i].responses })
           .where(eq(userResponse.id, prevResponse.id));
         promises.push(promise);
+
+        // Remove the updated response from the list of responses
         responses.splice(i, 1);
       };
     });
   }
 
+  // Create a new response for any remaining responses
   if (responses.length) {
     promises.push(db.insert(userResponse).values(responses));
   };
@@ -96,6 +133,8 @@ export async function POST(request: Request) {
   await Promise.all(promises).then(async (results) => {
     if (questionnaireId) {
       const id = parseInt(questionnaireId.toString());
+
+      // Get the current questionnaire and all of its questions
       const questionnaireResult = await db.select()
         .from(questionnaire)
         .fullJoin(
@@ -103,8 +142,15 @@ export async function POST(request: Request) {
           eq(questionnaire.id, joinQuestionnaireQuestion.questionnaireId)
         ).where(eq(questionnaire.id, id));
 
-      const allQuestionIds = questionnaireResult.map(result => result.JoinQuestionnaireQuestion?.questionId);
+      // Make a list of all question ids for the questionnaire
+      const allQuestionIds = questionnaireResult.map(
+        result => result.JoinQuestionnaireQuestion?.questionId
+      );
+
+      // Check whether the user answered all questions in the questionnaire
       const questionnaireComplete = arraysEqual(allQuestionIds.sort(), questionIds.sort());
+
+      // Create or update a join between the user and the questionnaire with a status
       if (questionnaireComplete && results[0].length) {
         await db.update(joinUserQuestionnaire)
           .set({ status: "COMPLETE" })

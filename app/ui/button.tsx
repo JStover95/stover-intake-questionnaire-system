@@ -11,8 +11,12 @@ interface IButtonProps {
   navUrl?: string;
 }
 
-const Button: React.FC<IButtonProps> = ({ onClick, children, className, type, navUrl }) => {
+const Button: React.FC<IButtonProps> = (
+  { onClick, children, className, type, navUrl }
+) => {
   const router = useRouter();
+
+  // Automatically navigate if navUrl is passed as a prop
   const handleNavigation = () => {
     if (navUrl) {
       router.push(navUrl);

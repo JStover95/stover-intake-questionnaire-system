@@ -70,17 +70,24 @@ export default async function AdminDashboard() {
     return Object.values(groupedData);
   }
 
+  // Get all table rows
   const tableRows = groupDataByUserAndQuestionnaire(data);
 
   return (
     <main className="column align-center">
       <div className="column">
+
+        {/* Header */}
         <div className="flex align-center justify-space-between mb2">
           <h1>Admin Dashboard</h1>
           <div>
-            <Button navUrl="/api/logout" className="btn btn-large btn-primary">Logout</Button>
+            <Button navUrl="/api/logout" className="btn btn-large btn-primary">
+              Logout
+            </Button>
           </div>
         </div>
+
+        {/* Data table */}
         <div>
           <table>
             <thead>
@@ -98,9 +105,19 @@ export default async function AdminDashboard() {
                   <tr key={`row-${i}`} className="border-b-light">
                     <td className="p1">{row.username}</td>
                     <td className="p1">{row.questionnaireName}</td>
-                    <td className="p1">{row.questionnaireStatus}</td>
+                    <td className="p1">{
+                      row.questionnaireStatus === "COMPLETE"
+                      ? "Complete"
+                      : "In progress"
+                    }</td>
                     <td className="p1">{row.responses.length}</td>
-                    <td className="p1"><ModalButton className="btn btn-large btn-primary" tableRow={row}>View</ModalButton></td>
+                    <td className="p1">
+                      <ModalButton
+                        className="btn btn-large btn-primary" tableRow={row}
+                      >
+                        View
+                      </ModalButton>
+                    </td>
                   </tr>
                 );
               })}

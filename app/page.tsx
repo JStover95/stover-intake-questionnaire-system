@@ -12,16 +12,20 @@ export default async function Login({ searchParams }: ILogin) {
   return (
     <main className="align-center column h600 justify-center">
       <div className="border-light border-radius p2 w350">
+
+        {/* The header and any error, if present */}
         <div className="justify-center">
           <h2>
             Please log in to continue.
           </h2>
         </div>
         {error && (
-          <div>
-            <span>{error}</span>
+          <div className="justify-center mb1">
+            <span className="font-s font-red">{error}</span>
           </div>
         )}
+
+        {/* The login form */}
         <form action="/api/login" method="POST">
           <div className="align-center column">
             <div className="align-center column">
