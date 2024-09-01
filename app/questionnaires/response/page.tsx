@@ -76,7 +76,7 @@ const RespondScreen = async ({ searchParams }: IRespondScreen) => {
   });
 
   return (
-    <main>
+    <main className="align-center column">
       <div>
         <h1>{questions[0].Questionnaire?.name}</h1>
       </div>

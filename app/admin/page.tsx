@@ -73,41 +73,40 @@ export default async function AdminDashboard() {
   const tableRows = groupDataByUserAndQuestionnaire(data);
 
   return (
-    <main>
-      <div>
-        <h1>Admin Dashboard</h1>
-      </div>
-      <div>
-        <span>Data</span>
-      </div>
-      <div>
-        <Button navUrl="/api/logout">Logout</Button>
-      </div>
-      <div>
-        <table>
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Questionnaire</th>
-              <th>Status</th>
-              <th>No. Responses</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {tableRows.map((row, i) => {
-              return (
-                <tr key={`row-${i}`}>
-                  <td>{row.username}</td>
-                  <td>{row.questionnaireName}</td>
-                  <td>{row.questionnaireStatus}</td>
-                  <td>{row.responses.length}</td>
-                  <td><ModalButton tableRow={row}>View</ModalButton></td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+    <main className="column align-center">
+      <div className="column">
+        <div className="flex align-center justify-space-between mb2">
+          <h1>Admin Dashboard</h1>
+          <div>
+            <Button navUrl="/api/logout" className="btn btn-large btn-primary">Logout</Button>
+          </div>
+        </div>
+        <div>
+          <table>
+            <thead>
+              <tr className="border-b-dark">
+                <th className="p1">User</th>
+                <th className="p1">Questionnaire</th>
+                <th className="p1">Status</th>
+                <th className="p1">No. Responses</th>
+                <th className="p1"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableRows.map((row, i) => {
+                return (
+                  <tr key={`row-${i}`} className="border-b-light">
+                    <td className="p1">{row.username}</td>
+                    <td className="p1">{row.questionnaireName}</td>
+                    <td className="p1">{row.questionnaireStatus}</td>
+                    <td className="p1">{row.responses.length}</td>
+                    <td className="p1"><ModalButton className="btn btn-large btn-primary" tableRow={row}>View</ModalButton></td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </main>
   )

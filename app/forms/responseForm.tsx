@@ -20,7 +20,6 @@ interface IFormData {
 }
 
 
-
 const ResponseForm = ({ questionnaireId, questions }: IResponseFormProps) => {
   const defaultValues: { [key: string]: string | string[] } = {};
   const values: { [key: string]: string | string[] } = {};
@@ -87,8 +86,8 @@ const ResponseForm = ({ questionnaireId, questions }: IResponseFormProps) => {
   }, [redirectPath]);
 
   const questionCards = questions.map((q, i) => (
-    <div key={i}>
-      <div>
+    <div key={i} className="mb2">
+      <div className="mb0-5">
         <span>{q.prompt}</span>
       </div>
       <div>
@@ -120,7 +119,7 @@ const ResponseForm = ({ questionnaireId, questions }: IResponseFormProps) => {
                         <label htmlFor={`question-${q.id}-option-${index}`}>{option}</label>
                       </div>
                     ))}
-                    <span>{errors?.[`question-${q.id}`]?.message?.toString()}</span>
+                    <span className="font-s font-red">{errors?.[`question-${q.id}`]?.message?.toString()}</span>
                   </>
                 )}
               />
@@ -145,7 +144,7 @@ const ResponseForm = ({ questionnaireId, questions }: IResponseFormProps) => {
                         <label htmlFor={`question-${q.id}-option-${index}`}>{option}</label>
                       </div>
                     ))}
-                    <span>{errors?.[`question-${q.id}`]?.message?.toString()}</span>
+                    <span className="font-s font-red">{errors?.[`question-${q.id}`]?.message?.toString()}</span>
                   </>
                 )}
               />
@@ -160,11 +159,11 @@ const ResponseForm = ({ questionnaireId, questions }: IResponseFormProps) => {
               render={({ field }) => (
                 <>
                   <textarea
+                    className="w100p h100"
                     {...field}
-                    // defaultValue={q.responses[0]}
                     onChange={(e) => field.onChange(e.target.value)}
                   />
-                  <span>{errors?.[`question-${q.id}`]?.message?.toString()}</span>
+                  <span className="font-red font-s">{errors?.[`question-${q.id}`]?.message?.toString()}</span>
                 </>
               )}
             />
@@ -178,7 +177,7 @@ const ResponseForm = ({ questionnaireId, questions }: IResponseFormProps) => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <input type="hidden" name="questionnaireId" value={questionnaireId} />
       {questionCards}
-      <Button type="submit">Submit</Button>
+      <Button type="submit" className="btn btn-large btn-primary">Submit</Button>
     </form>
   );
 };

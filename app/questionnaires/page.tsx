@@ -30,17 +30,20 @@ export default async function Questionnaires() {
       );
 
       questionnaireCards.push((
-        <div key={i}>
-          <div>
-            <span>{questionnaire.name}</span>
+        <div key={i} className="border-mid border-radius mh1 p2 w200">
+          <div className="mb1">
+            <span className="font-l">{questionnaire.name}</span>
           </div>
-          <div>
+          <div className="mb1">
           {join ? (
             <span>{join.status == "COMPLETE" ? "Complete" : "In progress"}</span>
           ) : <span>Not started</span>}
           </div>
           <div>
-            <Button navUrl={"/questionnaires/response?id=" + questionnaire.id}>
+            <Button
+              className="btn btn-primary btn-large"
+              navUrl={"/questionnaires/response?id=" + questionnaire.id}
+            >
               {join ? (join.status == "COMPLETE" ? "Edit" : "Continue") : "Begin"}
             </Button>
           </div>
@@ -50,13 +53,22 @@ export default async function Questionnaires() {
   });
 
   return (
-    <main>
-      <h1>Questionnaires</h1>
-      <div>
-        {questionnaireCards}
-      </div>
-      <div>
-        <Button navUrl="/api/logout">Logout</Button>
+    <main className="align-center column">
+      <div className="column">
+        <div className="align-center flex justify-space-between mb2">
+          <h1>Questionnaires</h1>
+          <div>
+            <Button
+              className="btn btn-primary btn-large"
+              navUrl="/api/logout"
+            >
+              Logout
+            </Button>
+          </div>
+        </div>
+        <div className="flex">
+          {questionnaireCards}
+        </div>
       </div>
     </main>
   );

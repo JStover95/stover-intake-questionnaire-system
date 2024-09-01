@@ -6,12 +6,12 @@ import React from "react";
 interface IButtonProps {
   onClick?: () => any;
   children: React.ReactNode;
+  className?: string;
   type?: "button" | "submit" | "reset" | undefined;
-  size?: string;
   navUrl?: string;
 }
 
-const Button: React.FC<IButtonProps> = ({ onClick, children, type, size, navUrl }) => {
+const Button: React.FC<IButtonProps> = ({ onClick, children, className, type, navUrl }) => {
   const router = useRouter();
   const handleNavigation = () => {
     if (navUrl) {
@@ -22,8 +22,8 @@ const Button: React.FC<IButtonProps> = ({ onClick, children, type, size, navUrl 
   return (
     <button
       type={type}
-      className={`btn btn-${size} btn-${type}`}
       onClick={navUrl ? handleNavigation : onClick}
+      className={className ? className : ""}
     >
       {children}
     </button>
