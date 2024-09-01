@@ -45,5 +45,5 @@ export const userResponse = pgTable("UserResponse", {
   createdAt: timestamp("created_at").notNull(),
   userId: integer("user_id").references(() => user.id).notNull(),
   questionId: integer("question_id").references(() => question.id).notNull(),
-  responses: text("responses").notNull(),
+  responses: text("responses").notNull().array(),
 });

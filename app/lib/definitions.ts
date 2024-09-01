@@ -1,45 +1,45 @@
 export type JoinQuestionnaireQuestion = {
-    id: number;
-    created_at: Date;
-    question_id: number;
-    questionnaire_id: number;
+    id?: number;
+    createdAt?: Date;
+    questionId: number;
+    questionnaireId: number;
     priority: number;
 };
 
 export type JoinUserQuestionnaire = {
-    id: number;
-    created_at: Date;
-    user_id: number;
-    questionnaire_id: number;
+    id?: number;
+    createdAt?: Date;
+    userId: number;
+    questionnaireId: number;
     status: "IN_PROGRESS" | "COMPLETE";
 };
 
 export type Question = {
-    id: number;
-    created_at: Date;
+    id?: number;
+    createdAt?: Date;
     type: string;
     prompt: string;
     options: string[] | null;
 };
 
 export type Questionnaire = {
-    id: number;
-    created_at: Date;
+    id?: number;
+    createdAt?: Date;
     name: string;
 };
 
 export type User = {
-    id: number;
-    created_at: Date;
+    id?: number;
+    createdAt?: Date;
     username: string;
     password: string;
-    is_admin: boolean;
+    isAdmin: boolean;
 };
 
 export type UserResponse = {
-    id: number;
-    created_at: Date;
-    user_id: number;
-    question_id: number;
+    id?: number;
+    createdAt?: Date;
+    userId: number;
+    questionId: number;
     responses: string[];
 };

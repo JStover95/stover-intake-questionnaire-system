@@ -3,7 +3,7 @@ import { db } from "../lib/db";
 import { joinUserQuestionnaire, questionnaire } from "../lib/schema";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { Questionnaire } from "../lib/definitions";
+import Button from "../ui/button";
 
 export default async function Questionnaires() {
   const cookieStore = cookies();
@@ -34,9 +34,9 @@ export default async function Questionnaires() {
           <span>{questionnaire.name}</span>
           {join && <span>{join.status}</span>}
           <div>
-            <button>
+            <Button navUrl={"/questionnaires/respond?id=" + questionnaire.id}>
               {join ? (join.status == "COMPLETE" ? "Edit" : "Continue") : "Begin"}
-            </button>
+            </Button>
           </div>
         </div>
       ));
