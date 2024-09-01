@@ -49,6 +49,9 @@ export default async function Questionnaires() {
       <div>
         {questionnaireCards}
       </div>
+      <div>
+        <Button navUrl="/api/logout">Logout</Button>
+      </div>
     </main>
   );
 };
