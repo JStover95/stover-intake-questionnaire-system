@@ -104,13 +104,12 @@ export async function POST(request: Response) {
         db.update(joinUserQuestionnaire)
           .set({ status: "COMPLETE" })
           .where(eq(joinUserQuestionnaire.id, results[0][0].id))
-          .then(console.log);
       } else if (!results[0].length) {
         db.insert(joinUserQuestionnaire).values({
           userId: parseInt(userData.id),
           questionnaireId: id,
           status: questionnaireComplete ? "COMPLETE" : "IN_PROGRESS", 
-        }).then(console.log);
+        })
       };
     };
   });

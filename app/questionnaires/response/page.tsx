@@ -3,6 +3,7 @@ import { Question, UserResponse } from "@/app/lib/definitions";
 import { joinQuestionnaireQuestion, question, questionnaire, userResponse } from "@/app/lib/schema";
 import Button from "@/app/ui/button";
 import CheckBox from "@/app/ui/checkbox";
+import Radio from "@/app/ui/radio";
 import TextArea from "@/app/ui/textarea";
 import { and, eq, inArray } from "drizzle-orm";
 import { cookies } from "next/headers";
@@ -85,18 +86,33 @@ const RespondScreen = async ({ searchParams }: IRespondScreen) => {
       </div>
       <div>
         {q.type === "mcq" && q.options ? (
-          <div>
-            {q.options.map((option, index) => (
-              <div key={index}>
-                <CheckBox
-                  id={`question-${q.id}-option-${index}`}
-                  name={`question-${q.id}-options`}
-                  value={option}
-                  checked={q.responses?.includes(option) || false}
-                />
-              </div>
-            ))}
-          </div>
+          q.prompt.includes("Select all that apply") ? (
+            <div>
+              {q.options.map((option, index) => (
+                <div key={index}>
+                  <CheckBox
+                    id={`question-${q.id}-option-${index}`}
+                    name={`question-${q.id}-options`}
+                    value={option}
+                    checked={q.responses?.includes(option) || false}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div>
+              {q.options.map((option, index) => (
+                <div key={index}>
+                  <Radio
+                    id={`question-${q.id}-option-${index}`}
+                    name={`question-${q.id}-options`}
+                    value={option}
+                    checked={q.responses?.includes(option) || false}
+                  />
+                </div>
+              ))}
+            </div>
+          )
         ) : (
           <div>
             <TextArea
