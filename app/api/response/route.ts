@@ -23,7 +23,7 @@ function arraysEqual(a: any[], b: any[]) {
 }
 
 
-export async function POST(request: Response) {
+export async function POST(request: Request) {
   const cookieStore = cookies();
   const user = cookieStore.get("user")?.value;
 
