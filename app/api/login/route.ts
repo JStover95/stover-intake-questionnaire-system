@@ -29,7 +29,12 @@ export async function POST(request: Request) {
     return NextResponse.redirect(url);
   }
 
-  const url = new URL("/questionnaires", request.url)
+  let url = new URL("/", request.url);
+  if (userResult[0].isAdmin) {
+    url = new URL("/admin", request.url);
+  } else {
+    url = new URL("/questionnaires", request.url);
+  };
   const res = NextResponse.redirect(url);
  
   const cookieOpts = {
