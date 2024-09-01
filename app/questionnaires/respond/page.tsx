@@ -1,6 +1,7 @@
 import { db } from "@/app/lib/db";
 import { Question, UserResponse } from "@/app/lib/definitions";
 import { joinQuestionnaireQuestion, question, questionnaire, userResponse } from "@/app/lib/schema";
+import Button from "@/app/ui/button";
 import CheckBox from "@/app/ui/checkbox";
 import TextArea from "@/app/ui/textarea";
 import { and, eq, inArray } from "drizzle-orm";
@@ -20,7 +21,7 @@ const RespondScreen = async ({ searchParams }: IRespondScreen) => {
   const cookieStore = cookies();
   const user = cookieStore.get("user")?.value;
 
-  if (!user && !user) {
+  if (!user) {
     redirect("/");
   }
 
@@ -76,36 +77,20 @@ const RespondScreen = async ({ searchParams }: IRespondScreen) => {
             {q.options.map((option, index) => (
               <div key={index}>
                 <CheckBox
-                  id={`question-${i}-option-${index}`}
-                  name={`question-${i}-options`}
+                  id={`question-${q.id}-option-${index}`}
+                  name={`question-${q.id}-options`}
                   value={option}
                   checked={q.responses?.includes(option) || false}
-                  userId={userData.id}
-                  responses={userResponses}
-                  questionId={q.id || -1}
                 />
-              {/* <input
-                type="checkbox"
-                onChange={(e) => q.id && handleCheckboxChange(q.id, option, e.target.checked)}
-              />
-              <label htmlFor={`question-${i}-option-${index}`}>{option}</label> */}
               </div>
             ))}
           </div>
         ) : (
           <div>
             <TextArea
-              name={`question-${i}`}
+              name={`question-${q.id}`}
               value={q.responses?.[0] || ""}
-              userId={userData.id}
-              responses={userResponses}
-              questionId={q.id || -1}
             />
-            {/* <textarea
-              value={q.responses?.[0] || ""}
-              onChange={(e) => q.id && handleTextChange(q.id, e.target.value)} // Define this function to handle changes
-              placeholder="Type your response here..."
-            /> */}
           </div>
         )}
       </div>
@@ -118,7 +103,10 @@ const RespondScreen = async ({ searchParams }: IRespondScreen) => {
         <h1>{questions[0].Questionnaire?.name}</h1>
       </div>
       <div>
-        {questionCards}
+        <form action="/api/response" method="POST">
+          {questionCards}
+          <Button type="submit">Submit</Button>
+        </form>
       </div>
     </main>
   )

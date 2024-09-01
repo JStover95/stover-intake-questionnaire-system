@@ -13,7 +13,6 @@ interface IButtonProps {
 
 const Button: React.FC<IButtonProps> = ({ onClick, children, type, size, navUrl }) => {
   const router = useRouter();
-  console.log(navUrl);
   const handleNavigation = () => {
     if (navUrl) {
       router.push(navUrl);
