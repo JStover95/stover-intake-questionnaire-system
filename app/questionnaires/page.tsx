@@ -40,7 +40,7 @@ export default async function Questionnaires() {
           ) : <span>Not started</span>}
           </div>
           <div>
-            <Button navUrl={"/questionnaires/respond?id=" + questionnaire.id}>
+            <Button navUrl={"/questionnaires/response?id=" + questionnaire.id}>
               {join ? (join.status == "COMPLETE" ? "Edit" : "Continue") : "Begin"}
             </Button>
           </div>

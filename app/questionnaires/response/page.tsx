@@ -42,7 +42,19 @@ const RespondScreen = async ({ searchParams }: IRespondScreen) => {
 
   const questionIds: number[] = [];
   const questionsWithResponses: IQuestionsWithResponses[] = [];
-  questions.forEach(q => {
+  questions.sort((a, b) => {
+    if (a.JoinQuestionnaireQuestion && b.JoinQuestionnaireQuestion) {
+      const aPriority = a.JoinQuestionnaireQuestion.priority;
+      const bPriority = b.JoinQuestionnaireQuestion.priority;
+      if (aPriority > bPriority) {
+        return 1;
+      } else if (bPriority > aPriority) {
+        return -1;
+      }
+      return 0;
+    }
+    return 0;
+  }).forEach(q => {
     if (q.Question) {
       questionIds.push(q.Question.id);
       questionsWithResponses.push({ ...q.Question, responses: [] as string[] })

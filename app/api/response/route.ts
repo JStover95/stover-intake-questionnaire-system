@@ -99,16 +99,13 @@ export async function POST(request: Response) {
         ).where(eq(questionnaire.id, id));
 
       const allQuestionIds = questionnaireResult.map(result => result.JoinQuestionnaireQuestion?.questionId);
-      const questionnaireComplete = arraysEqual(allQuestionIds, questionIds);
-      console.log(questionnaireComplete);
+      const questionnaireComplete = arraysEqual(allQuestionIds.sort(), questionIds.sort());
       if (questionnaireComplete && results[0].length) {
-        console.log("1");
         db.update(joinUserQuestionnaire)
           .set({ status: "COMPLETE" })
           .where(eq(joinUserQuestionnaire.id, results[0][0].id))
           .then(console.log);
       } else if (!results[0].length) {
-        console.log("2");
         db.insert(joinUserQuestionnaire).values({
           userId: parseInt(userData.id),
           questionnaireId: id,
