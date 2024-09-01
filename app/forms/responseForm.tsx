@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Question } from "../lib/definitions";
 import Button from "../ui/button";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 interface IQuestionsWithResponses extends Question {
   responses: string[];
@@ -21,8 +21,10 @@ interface IFormData {
 
 
 const ResponseForm = ({ questionnaireId, questions }: IResponseFormProps) => {
-  const defaultValues: { [key: string]: string | string[] } = {};
-  const values: { [key: string]: string | string[] } = {};
+  const router = useRouter();
+
+  const defaultValues: { [key: string]: string | string[] } = { "questionnaireId": "" };
+  const values: { [key: string]: string | string[] } = { "questionnaireId": questionnaireId.toString() };
   questions.forEach(question => {
     if (question.id) {
       if (question.type === "mcq") {
@@ -81,7 +83,7 @@ const ResponseForm = ({ questionnaireId, questions }: IResponseFormProps) => {
 
   useEffect(() => {
     if (redirectPath !== "") {
-      redirect(redirectPath);
+      window.location.href = redirectPath;
     }
   }, [redirectPath]);
 
@@ -175,7 +177,11 @@ const ResponseForm = ({ questionnaireId, questions }: IResponseFormProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <input type="hidden" name="questionnaireId" value={questionnaireId} />
+      <Controller
+        name={"questionnaireId"}
+        control={control}
+        render={({ field }) => <input type="hidden" name="questionnaireId" />}
+      />
       {questionCards}
       <Button type="submit" className="btn btn-large btn-primary">Submit</Button>
     </form>

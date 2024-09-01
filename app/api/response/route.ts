@@ -106,11 +106,11 @@ export async function POST(request: Response) {
       const allQuestionIds = questionnaireResult.map(result => result.JoinQuestionnaireQuestion?.questionId);
       const questionnaireComplete = arraysEqual(allQuestionIds.sort(), questionIds.sort());
       if (questionnaireComplete && results[0].length) {
-        db.update(joinUserQuestionnaire)
+        await db.update(joinUserQuestionnaire)
           .set({ status: "COMPLETE" })
           .where(eq(joinUserQuestionnaire.id, results[0][0].id))
       } else if (!results[0].length) {
-        db.insert(joinUserQuestionnaire).values({
+        await db.insert(joinUserQuestionnaire).values({
           userId: parseInt(userData.id),
           questionnaireId: id,
           status: questionnaireComplete ? "COMPLETE" : "IN_PROGRESS", 

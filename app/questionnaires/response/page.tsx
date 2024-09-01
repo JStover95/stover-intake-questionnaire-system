@@ -4,7 +4,7 @@ import { Question, UserResponse } from "@/app/lib/definitions";
 import { joinQuestionnaireQuestion, question, questionnaire, userResponse } from "@/app/lib/schema";
 import { and, eq, inArray } from "drizzle-orm";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 interface IRespondScreen {
   searchParams: { id: number }
