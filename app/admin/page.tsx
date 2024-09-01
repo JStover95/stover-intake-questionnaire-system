@@ -2,20 +2,8 @@ import { and, eq } from "drizzle-orm";
 import { db } from "../lib/db";
 import { joinQuestionnaireQuestion, joinUserQuestionnaire, question, questionnaire, user, userResponse } from "../lib/schema";
 import Button from "../ui/button";
-
-interface ITableRow {
-  userId: number;
-  username: string;
-  questionnaireId: number;
-  questionnaireName: string;
-  questionnaireStatus: string;
-  responses: {
-    questionId: number;
-    prompt: string;
-    type: string;
-    responses: string[];
-  }[]
-}
+import { TableRow } from "../lib/definitions";
+import ModalButton from "../ui/modalButton";
 
 
 export default async function AdminDashboard() {
@@ -43,9 +31,9 @@ export default async function AdminDashboard() {
       )
     )
 
-  function groupDataByUserAndQuestionnaire(data: any[]): ITableRow[] {
+  function groupDataByUserAndQuestionnaire(data: any[]): TableRow[] {
     // Create a map to store data grouped by userId and questionnaireId
-    const groupedData: { [key: string]: ITableRow } = {};
+    const groupedData: { [key: string]: TableRow } = {};
 
     data.forEach(entry => {
       const { userId } = entry.UserResponse;
@@ -98,11 +86,13 @@ export default async function AdminDashboard() {
       <div>
         <table>
           <thead>
-            <th>User</th>
-            <th>Questionnaire</th>
-            <th>Status</th>
-            <th>No. Responses</th>
-            <th></th>
+            <tr>
+              <th>User</th>
+              <th>Questionnaire</th>
+              <th>Status</th>
+              <th>No. Responses</th>
+              <th></th>
+            </tr>
           </thead>
           <tbody>
             {tableRows.map((row, i) => {
@@ -112,7 +102,7 @@ export default async function AdminDashboard() {
                   <td>{row.questionnaireName}</td>
                   <td>{row.questionnaireStatus}</td>
                   <td>{row.responses.length}</td>
-                  <td><Button>View</Button></td>
+                  <td><ModalButton tableRow={row}>View</ModalButton></td>
                 </tr>
               );
             })}

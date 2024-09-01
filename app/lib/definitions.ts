@@ -43,3 +43,17 @@ export type UserResponse = {
     questionId: number;
     responses: string[];
 };
+
+export type TableRow = {
+  userId: number;
+  username: string;
+  questionnaireId: number;
+  questionnaireName: string;
+  questionnaireStatus: string;
+  responses: {
+    questionId: number;
+    prompt: string;
+    type: string;
+    responses: string[];
+  }[]
+}

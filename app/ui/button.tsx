@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 interface IButtonProps {
-  onClick?: () => Promise<any>;
+  onClick?: () => any;
   children: React.ReactNode;
   type?: "button" | "submit" | "reset" | undefined;
   size?: string;
