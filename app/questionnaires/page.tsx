@@ -17,7 +17,7 @@ export default async function Questionnaires() {
   const questionnaires = db.select().from(questionnaire);
   const joinQuestionnaires = db.select()
     .from(joinUserQuestionnaire)
-    .where(eq(joinUserQuestionnaire.userId, userData.id));
+    .where(eq(joinUserQuestionnaire.userId, parseInt(userData.id)));
 
   const questionnaireCards: React.ReactNode[] = [];
   await Promise.all([questionnaires, joinQuestionnaires]).then(result => {
@@ -26,13 +26,19 @@ export default async function Questionnaires() {
 
     questionnaires.forEach((questionnaire, i) => {
       const join = joins.find(
-        join => join.questionnaireId === questionnaire.id
+        join => join.questionnaireId == questionnaire.id
       );
 
       questionnaireCards.push((
         <div key={i}>
-          <span>{questionnaire.name}</span>
-          {join && <span>{join.status}</span>}
+          <div>
+            <span>{questionnaire.name}</span>
+          </div>
+          <div>
+          {join ? (
+            <span>{join.status == "COMPLETE" ? "Complete" : "In progress"}</span>
+          ) : <span>Not started</span>}
+          </div>
           <div>
             <Button navUrl={"/questionnaires/respond?id=" + questionnaire.id}>
               {join ? (join.status == "COMPLETE" ? "Edit" : "Continue") : "Begin"}

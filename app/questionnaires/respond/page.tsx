@@ -104,6 +104,7 @@ const RespondScreen = async ({ searchParams }: IRespondScreen) => {
       </div>
       <div>
         <form action="/api/response" method="POST">
+          <input type="hidden" name="questionnaireId" value={id} />
           {questionCards}
           <Button type="submit">Submit</Button>
         </form>
