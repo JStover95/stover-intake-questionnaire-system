@@ -128,3 +128,6 @@ export default async function AdminDashboard() {
     </main>
   )
 };
+
+
+export const dynamic = "force-dynamic";
